@@ -1,0 +1,14 @@
+class CPUState:
+    def __init__(self):
+        self.PC = 0
+        self.IR = 0
+        self.MAR = 0
+        self.MDR = 0
+        self.ACC = 0
+        self.registers = [0] * 8
+        self.flag_z = False
+        self.flag_c = False
+        self.flag_n = False
+        self.flag_v = False
+
+cpu = CPUState()

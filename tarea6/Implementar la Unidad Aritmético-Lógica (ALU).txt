@@ -1,0 +1,48 @@
+class ALU:
+    def __init__(self, cpu_state):
+        self.cpu = cpu_state
+
+    def execute(self, op, operand1, operand2=0):
+        result = 0
+        
+        if op == "ADD":
+            raw = operand1 + operand2
+            result = raw & 0xFFFF
+            self.cpu.flag_c = raw > 0xFFFF
+            self.cpu.flag_v = bool((~(operand1 ^ operand2) & (operand1 ^ result)) & 0x8000)
+        elif op == "SUB":
+            raw = operand1 - operand2
+            result = raw & 0xFFFF
+            self.cpu.flag_c = operand1 >= operand2
+            self.cpu.flag_v = bool(((operand1 ^ operand2) & (operand1 ^ result)) & 0x8000)
+        elif op == "AND":
+            result = operand1 & operand2
+            self.cpu.flag_c = False
+            self.cpu.flag_v = False
+        elif op == "OR":
+            result = operand1 | operand2
+            self.cpu.flag_c = False
+            self.cpu.flag_v = False
+        elif op == "XOR":
+            result = operand1 ^ operand2
+            self.cpu.flag_c = False
+            self.cpu.flag_v = False
+        elif op == "NOT":
+            result = (~operand1) & 0xFFFF
+            self.cpu.flag_c = False
+            self.cpu.flag_v = False
+        elif op == "SHL":
+            result = (operand1 << 1) & 0xFFFF
+            self.cpu.flag_c = bool(operand1 & 0x8000)
+            self.cpu.flag_v = False
+        elif op == "SHR":
+            result = (operand1 >> 1) & 0xFFFF
+            self.cpu.flag_c = bool(operand1 & 0x01)
+            self.cpu.flag_v = False
+
+        self.cpu.flag_z = (result == 0)
+        self.cpu.flag_n = bool(result & 0x8000)
+
+        return result
+
+alu = ALU(cpu)

@@ -1,0 +1,13 @@
+function Fetch() {
+  CPU.MAR = CPU.PC & 0xFF;
+  CPU.MDR = Read(CPU.MAR);
+  CPU.IR = CPU.MDR;
+  CPU.PC = (CPU.PC + 1) & 0xFF;
+}
+
+function FetchOperand() {
+  CPU.MAR = CPU.PC & 0xFF;
+  CPU.MDR = Read(CPU.MAR);
+  CPU.PC = (CPU.PC + 1) & 0xFF;
+  return CPU.MDR;
+} 

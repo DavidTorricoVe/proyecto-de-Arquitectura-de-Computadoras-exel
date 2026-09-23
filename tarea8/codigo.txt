@@ -1,0 +1,31 @@
+function Decode() {
+  DecodedInstruction.opcode = Number(CPU.IR) & 0xFF;
+  DecodedInstruction.targetReg = null;
+  DecodedInstruction.operand = 0;
+
+  switch (DecodedInstruction.opcode) {
+    case 0x10:
+      DecodedInstruction.mnemonic = "MOV AX, imm";
+      DecodedInstruction.type = "MOV";
+      DecodedInstruction.targetReg = "AX";
+      DecodedInstruction.operand = FetchOperand();
+      break;
+
+    case 0x20:
+      DecodedInstruction.mnemonic = "ADD AX, imm";
+      DecodedInstruction.type = "ALU";
+      DecodedInstruction.targetReg = "AX";
+      DecodedInstruction.operand = FetchOperand();
+      break;
+
+    case 0xFF:
+      DecodedInstruction.mnemonic = "HLT";
+      DecodedInstruction.type = "SYS";
+      break;
+
+    default:
+      DecodedInstruction.mnemonic = "NOP";
+      DecodedInstruction.type = "NONE";
+      break;
+  }
+}

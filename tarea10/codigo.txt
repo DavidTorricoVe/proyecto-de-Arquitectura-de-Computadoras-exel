@@ -1,0 +1,32 @@
+function Store() {
+  if (ExecutionResult.writeToReg) {
+    CPU[ExecutionResult.writeToReg] = ExecutionResult.value;
+  }
+  
+  if (ExecutionResult.writeToMem !== null) {
+    CPU.MAR = ExecutionResult.writeToMem & 0xFF;
+    CPU.MDR = ExecutionResult.value & 0xFF;
+    Write(CPU.MAR, CPU.MDR);
+  }
+}
+
+function TestFullCycle() {
+  LoadCPUState();
+
+  CPU.PC = 0x00;
+  CPU.AX = 0x05;
+  
+  Write(0x00, 0x20);
+  Write(0x01, 0x07);
+  
+  Fetch();
+  Decode();
+  Execute();
+  Store();
+
+  Logger.log("=== PRUEBA DE CICLO COMPLETO ===");
+  Logger.log("Nuevo valor de AX (debe ser 12 / 0Ch): 0x" + toHex2Digits(CPU.AX));
+  Logger.log("Bandera ZF: " + CPU.ZF + " | Bandera CF: " + CPU.CF + " | Bandera SF: " + CPU.SF);
+  
+  SaveCPUState();
+}

@@ -1,0 +1,26 @@
+let ExecutionResult = {
+  value: null,
+  writeToReg: null,
+  writeToMem: null
+};
+
+function Execute() {
+  ExecutionResult.value = null;
+  ExecutionResult.writeToReg = null;
+  ExecutionResult.writeToMem = null;
+
+  switch(DecodedInstruction.opcode) {
+    case 0x10:
+      ExecutionResult.value = DecodedInstruction.operand;
+      ExecutionResult.writeToReg = DecodedInstruction.targetReg;
+      break;
+
+    case 0x20:
+      ExecutionResult.value = ExecuteALU('ADD', CPU.AX, DecodedInstruction.operand);
+      ExecutionResult.writeToReg = DecodedInstruction.targetReg;
+      break;
+
+    case 0xFF:
+      break;
+  }
+}

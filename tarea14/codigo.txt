@@ -1,0 +1,46 @@
+function WriteLog(message) {
+  const sheet = getMemorySheet();
+  const logRange = sheet.getRange("V6:V45");
+  const values = logRange.getValues();
+
+  let emptyRowIndex = -1;
+  for (let i = 0; i < values.length; i++) {
+    if (values[i][0] === "" || values[i][0] === null) {
+      emptyRowIndex = i;
+      break;
+    }
+  }
+
+  if (emptyRowIndex === -1) {
+    ClearLog();
+    emptyRowIndex = 0;
+  }
+
+  const targetCell = sheet.getRange(6 + emptyRowIndex, 22); 
+  targetCell.setValue(message);
+  SpreadsheetApp.flush();
+}
+
+function ClearLog() {
+  const sheet = getMemorySheet();
+  sheet.getRange("V6:Z45").clearContent();
+}
+
+function TestDynamics() {
+  ClearLog();
+  WriteLog("--- INICIANDO TEST DÍA 7 ---");
+  
+  WriteLog("1. Accediendo a PC...");
+  HighlightRegister('PC');
+  
+  WriteLog("2. Leyendo opcode en RAM [00h]...");
+  HighlightMemory(0x00);
+  
+  WriteLog("3. Cargando en IR...");
+  HighlightRegister('IR');
+
+  WriteLog("4. Escribiendo resultado en RAM [81h]...");
+  HighlightMemory(0x81);
+
+  WriteLog("--- TEST FINALIZADO CON ÉXITO ---");
+}

@@ -1,0 +1,37 @@
+const COLOR_ACTIVE     = "#FFFF99";
+const COLOR_REG_ACTIVE = "#FFD700";
+const COLOR_REG_NORMAL = "#FFF2CC";
+const COLOR_CODE_RAM   = "#FFFFFF";
+const COLOR_DATA_RAM   = "#E6FFE6";
+
+function HighlightMemory(address) {
+  const sheet = getMemorySheet();
+  address = address & 0xFF;
+  
+  const row = MEM_ROW_OFFSET + Math.floor(address / 16);
+  const col = MEM_COL_OFFSET + (address % 16);
+  const cell = sheet.getRange(row, col);
+
+  const originalColor = (address < 0x80) ? COLOR_CODE_RAM : COLOR_DATA_RAM;
+
+  cell.setBackground(COLOR_ACTIVE);
+  SpreadsheetApp.flush(); 
+  Utilities.sleep(120);   
+
+  cell.setBackground(originalColor);
+}
+
+function HighlightRegister(regName) {
+  const sheet = getMemorySheet();
+  const regIndex = REG_ORDER.indexOf(regName);
+  if (regIndex === -1) return;
+
+  const cellAddress = 'T' + (5 + regIndex);
+  const cell = sheet.getRange(cellAddress);
+
+  cell.setBackground(COLOR_REG_ACTIVE);
+  SpreadsheetApp.flush();
+  Utilities.sleep(120);
+
+  cell.setBackground(COLOR_REG_NORMAL);
+}

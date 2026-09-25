@@ -1,0 +1,41 @@
+case 0x10:
+  DecodedInstruction.mnemonic = "MOV AX, imm";
+  DecodedInstruction.type = "MOV";
+  DecodedInstruction.targetReg = "AX";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x12:
+  DecodedInstruction.mnemonic = "MOV AX, BX";
+  DecodedInstruction.type = "MOV_REG";
+  DecodedInstruction.targetReg = "AX";
+  break;
+case 0x14:
+  DecodedInstruction.mnemonic = "LOAD AX, [dir]";
+  DecodedInstruction.type = "LOAD";
+  DecodedInstruction.targetReg = "AX";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x15:
+  DecodedInstruction.mnemonic = "STORE [dir], AX";
+  DecodedInstruction.type = "STORE";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x30:
+  DecodedInstruction.mnemonic = "JMP dir";
+  DecodedInstruction.type = "JMP";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x31:
+  DecodedInstruction.mnemonic = "JZ dir";
+  DecodedInstruction.type = "Jcc";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x32:
+  DecodedInstruction.mnemonic = "JNZ dir";
+  DecodedInstruction.type = "Jcc";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0xFF:
+  DecodedInstruction.mnemonic = "HLT";
+  DecodedInstruction.type = "SYS";
+  break;

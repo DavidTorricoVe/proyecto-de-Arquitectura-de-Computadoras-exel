@@ -1,0 +1,44 @@
+case 0x20:
+  DecodedInstruction.mnemonic = "ADD AX, imm";
+  DecodedInstruction.type = "ALU";
+  DecodedInstruction.targetReg = "AX";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x22:
+  DecodedInstruction.mnemonic = "SUB AX, imm";
+  DecodedInstruction.type = "ALU";
+  DecodedInstruction.targetReg = "AX";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+case 0x23:
+  DecodedInstruction.mnemonic = "INC AX";
+  DecodedInstruction.type = "ALU_UNARY";
+  DecodedInstruction.targetReg = "AX";
+  break;
+case 0x24:
+  DecodedInstruction.mnemonic = "DEC AX";
+  DecodedInstruction.type = "ALU_UNARY";
+  DecodedInstruction.targetReg = "AX";
+  break;
+case 0x25:
+  DecodedInstruction.mnemonic = "CMP AX, imm";
+  DecodedInstruction.type = "CMP";
+  DecodedInstruction.operand = FetchOperand();
+  break;
+
+
+
+
+  case "ALU":
+  let op = (DecodedInstruction.opcode === 0x20) ? 'ADD' : 'SUB';
+  ExecutionResult.value = ExecuteALU(op, CPU[DecodedInstruction.targetReg], DecodedInstruction.operand);
+  ExecutionResult.writeToReg = DecodedInstruction.targetReg;
+  break;
+case "ALU_UNARY":
+  let unaryOp = (DecodedInstruction.opcode === 0x23) ? 'INC' : 'DEC';
+  ExecutionResult.value = ExecuteALU(unaryOp, CPU[DecodedInstruction.targetReg]);
+  ExecutionResult.writeToReg = DecodedInstruction.targetReg;
+  break;
+case "CMP":
+  ExecuteALU('CMP', CPU.AX, DecodedInstruction.operand);
+  break;

@@ -1,0 +1,36 @@
+function BtnRun() {
+  WriteLog("Iniciando ejecución continua (RUN)...");
+  PropertiesService.getDocumentProperties().setProperty('IS_RUNNING', 'TRUE');
+  
+  let safetyCounter = 0; 
+  const MAX_CYCLES = 50; 
+  
+  while (safetyCounter < MAX_CYCLES) {
+    let isRunning = PropertiesService.getDocumentProperties().getProperty('IS_RUNNING');
+    if (isRunning === 'FALSE') {
+      WriteLog("Ejecución pausada por el usuario.");
+      break;
+    }
+    
+    LoadCPUState();
+    if (CPU.isHalted) {
+      WriteLog("Ejecución finalizada (HLT alcanzado).");
+      break;
+    }
+    
+    BtnStep();
+    
+    Utilities.sleep(800);
+    
+    safetyCounter++;
+  }
+  
+  if (safetyCounter >= MAX_CYCLES) {
+    WriteLog("Ejecución detenida: Límite de ciclos alcanzado.");
+  }
+}
+
+function BtnPause() {
+  PropertiesService.getDocumentProperties().setProperty('IS_RUNNING', 'FALSE');
+  WriteLog("Señal de PAUSE enviada...");
+}

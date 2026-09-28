@@ -1,0 +1,64 @@
+function BtnReset() {
+  const sheet = getMemorySheet();
+  
+  const ramRange = sheet.getRange(RAM_START_ROW, RAM_START_COL, 16, 16);
+  const emptyRam = Array(16).fill(Array(16).fill("00"));
+  ramRange.setNumberFormat('@');
+  ramRange.setValues(emptyRam);
+  ramRange.setBackground(COLOR_NORMAL); 
+  
+  sheet.getRange(RAM_START_ROW, RAM_START_COL, 8, 16).setBackground(COLOR_CODE);
+  sheet.getRange(RAM_START_ROW + 8, RAM_START_COL, 8, 16).setBackground(COLOR_DATA);
+  
+  CPU = { PC: 0, IR: 0, MAR: 0, MDR: 0, AX: 0, BX: 0, ZF: 0, CF: 0, SF: 0, isHalted: false };
+  SaveCPUState();
+  
+  ClearLog();
+  WriteLog("Sistema Reiniciado (RESET).");
+  
+  PropertiesService.getDocumentProperties().setProperty('IS_RUNNING', 'FALSE');
+}
+
+function BtnLoad() {
+  BtnReset(); 
+  
+  Write(0x00, 0x10); 
+  Write(0x01, 0x03); 
+  
+  Write(0x02, 0x15); 
+  Write(0x03, 0x80); 
+  
+  Write(0x04, 0x24); 
+  
+  Write(0x05, 0x25); 
+  Write(0x06, 0x00); 
+  
+  Write(0x07, 0x32); 
+  Write(0x08, 0x02); 
+  
+  Write(0x09, 0xFF); 
+  
+  WriteLog("Programa 'Cuenta Regresiva' cargado en RAM.");
+}
+
+function BtnStep() {
+  LoadCPUState();
+  
+  if (CPU.isHalted) {
+    WriteLog("Error: CPU detenida (HLT). Presiona RESET.");
+    return;
+  }
+
+  HighlightRegister('PC');
+  HighlightMemory(CPU.PC);
+  
+  Fetch();
+  Decode();
+  Execute();
+  Store();
+  
+  let logMsg = `[PC: 0x${toHex2Digits(CPU.PC)}] Ejecutado: ${DecodedInstruction.mnemonic}`;
+  WriteLog(logMsg);
+  
+  SaveCPUState();
+}

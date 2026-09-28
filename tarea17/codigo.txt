@@ -1,0 +1,45 @@
+function TestCarryFlag() {
+  BtnReset();
+  WriteLog("Iniciando Test: Desbordamiento (Carry Flag)...");
+  
+  Write(0x00, 0x10); 
+  Write(0x01, 0xFA); 
+  Write(0x02, 0x20); 
+  Write(0x03, 0x0A);
+  Write(0x04, 0xFF); 
+  
+  CPU.PC = 0x00;
+  for(let i = 0; i < 3; i++) {
+    Fetch(); Decode(); Execute(); Store();
+  }
+  
+  if (CPU.AX === 0x04 && CPU.CF === 1) {
+    WriteLog("ÉXITO: Carry Flag detectó el desbordamiento. AX = 04h.");
+  } else {
+    WriteLog("ERROR: Fallo en el cálculo de desbordamiento.");
+  }
+  SaveCPUState();
+}
+
+function TestSignFlag() {
+  BtnReset();
+  WriteLog("Iniciando Test: Números Negativos (Sign Flag)...");
+  
+  Write(0x00, 0x10); 
+  Write(0x01, 0x05); 
+  Write(0x02, 0x22); 
+  Write(0x03, 0x08);
+  Write(0x04, 0xFF); 
+  
+  CPU.PC = 0x00;
+  for(let i = 0; i < 3; i++) {
+    Fetch(); Decode(); Execute(); Store();
+  }
+  
+  if (CPU.AX === 0xFD && CPU.SF === 1 && CPU.CF === 1) {
+    WriteLog("ÉXITO: Sign Flag detectó número negativo. AX = FDh.");
+  } else {
+    WriteLog("ERROR: Fallo en el cálculo de números negativos.");
+  }
+  SaveCPUState();
+}
